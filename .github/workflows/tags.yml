@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
       - name: Set output
         id: vars
-        run: echo ::set-output name=tag::${{ github.ref#refs/tags/ }}
+        run: echo ::set-output name=tag::${{ $env.GIHUB_REF#refs/tags/ }}
       - name: Check output
         env:
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
