@@ -21,10 +21,20 @@ jobs:
           registry: ${{ secrets.ACR_NAME }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${{ github.ref#refs/tags/ }}
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
       - name: Build and push production images
         uses: docker/build-push-action@v2
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         with:
           context: .
-          tags: ${{secrets.ACR_NAME}}/contoso-website:${{ github.ref }}
+          tags: ${{secrets.ACR_NAME}}/contoso-website:${{ env.RELEASE_VERSION }}
           push: true
